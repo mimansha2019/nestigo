@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nestigo Booking</title>
+  <link rel="icon" type="image/png" href="./images/logo.ico">
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"/>
+   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC4m3lN1aSqdlY2rs8UFR-55zS_PxJCgBw&libraries=places"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+   
+</script>
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <div class="logo"><a href="index.html" class="logo-nav"><img src="images/logo.png" alt="Nestigo Logo" width="40"></a>Nestigo</div>
+      <!-- NAVIGATION BAR -->
+  <div class="nav-buttons">
+
+  <a href="hotelslist.html" target="_blank" class="nav-button">Book Hotels</a>
+  <a href="#about-us" class="nav-button smooth-scroll">About Us</a>
+ <a class="nav-button" id="sign-in-btn"
+   href="https://dev-srolq5coxmes27yo.us.auth0.com/authorize?client_id=1DwVF3ZMshLbYevAMGFb6hhEj0kIIdFE&response_type=token&redirect_uri=http://localhost:5500/index.html">
+   Sign In
+</a>
+<a class="nav-button" id="sign-up-btn"
+   href="https://dev-srolq5coxmes27yo.us.auth0.com/authorize?client_id=1DwVF3ZMshLbYevAMGFb6hhEj0kIIdFE&response_type=token&redirect_uri=http://localhost:5500/index.html&screen_hint=signup">
+   Sign Up
+</a>
+
+<div class="dropdown" id="user-profile" style="display: none;">
+  <button class="profile-btn"  id="profile-button">
+    <img id="profile-pic" src="https://via.placeholder.com/100" alt="User" />
+    <span id="profile-name"></span>
+  </button>
+  <div class="dropdown-menu" id="dropdown-menu">
+    <div class="dropdown-user-info">
+    
+    <div>
+      <p class="greeting">Hi, <span id="dropdown-username">User</span></p>
+    </div>
+  </div>
+  <a href="#" onclick="toggleBookingHistory()">🧳 Your Booking History</a>
+  <a href="#" onclick="logout()">🚪 Logout</a>
+   <div id="booking-history-box" class="dropdown-left" style="display: none;">
+  <h4>🧳 Your Booking History</h4>
+  <ul id="booking-list"></ul>
+  <button onclick="downloadBookingPDF()">Download PDF</button>
+</div>
+</div>
+</div>
+
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="overlay"></div>
+    <video autoplay muted loop class="background-video">
+      <source src="./videos/scenery.mp4" type="video/mp4">
+    </video>
+    <div class="hero-content">
+      <h1>Plan your <span class="highlight">Stay</span> with <span class="highlight">Ease</span></h1>
+      <form onsubmit="return setSearchCookie(event)"><input type="text" class="search-box" id="destination-input" placeholder="Search countries, cities"><button type="submit"><i class="fas fa-search"></i></button></form>
+    </div>
+  </section>
+
+  
+
+  <h2 class="section-title popular">POPULAR DESTINATIONS</h2>
+  <div class="cards-wrapper">
+  <div class="cards-container" id="cardsContainer">
+        <!-- Cards will be duplicated by JavaScript to create infinite effect -->
+    </div>
+</div>
+    <section class="experience-section">
+    <h2 class="section-title explore">EXPLORE THE WORLD</h2>
+    <div class="experience-grid">
+      <!-- Repeat for each card -->
+      <div class="experience-card" onclick="goToPage('hotels.html')" style="background-image: url('https://images.unsplash.com/photo-1523374228107-6e44bd2b524e?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');">
+        <div class="overlay">
+          <p class="subtitle">Cities That Never Sleep</p>
+          <h3>North America</h3>
+        </div>
+      </div>
+
+      <div class="experience-card" onclick="goToPage('hotels.html')" style="background-image: url('https://images.unsplash.com/photo-1483729558449-99ef09a8c325?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');">
+        <div class="overlay">
+          <p class="subtitle">Where the Andes Meet the Amazon</p>
+          <h3>South America</h3>
+        </div>
+      </div>
+
+      <div class="experience-card" onclick="goToPage('hotels.html')" style="background-image: url('https://images.unsplash.com/photo-1473951574080-01fe45ec8643?q=80&w=2104&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');">
+        <div class="overlay">
+          <p class="subtitle">FALL IN LOVE WITH</p>
+          <h3>Europe</h3>
+        </div>
+      </div>
+
+      <div class="experience-card" onclick="goToPage('hotels.html')" style="background-image: url('https://images.unsplash.com/photo-1564507592333-c60657eea523?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');">
+        <div class="overlay">
+          <p class="subtitle">DIVERSITY IN CULTURE</p>
+          <h3>Asia</h3>
+        </div>
+      </div>
+
+      <!-- 4 more cards -->
+      <div class="experience-card" onclick="goToPage('hotels.html')" style="background-image: url('https://images.unsplash.com/photo-1587898818553-2f4ee6fdf1a5?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');">
+        <div class="overlay">
+          <p class="subtitle">WHERE DUNES MEET DESTINY</p>
+          <h3>Middle East</h3>
+        </div>
+      </div>
+
+      <div class="experience-card" onclick="goToPage('hotels.html')" style="background-image: url('https://images.unsplash.com/photo-1518709594023-6eab9bab7b23?q=80&w=1925&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');">
+        <div class="overlay">
+          <p class="subtitle">SAFARIS OF THE SOUL</p>
+          <h3>Africa</h3>
+        </div>
+      </div>
+
+      <div class="experience-card" onclick="goToPage('hotels.html')" style="background-image: url('https://images.unsplash.com/photo-1528181304800-259b08848526?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');">
+        <div class="overlay">
+          <p class="subtitle">EMBRACING THE MAGIC</p>
+          <h3>South East Asia</h3>
+        </div>
+      </div>
+
+      <div class="experience-card" onclick="goToPage('hotels.html')" style="background-image: url('https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');">
+        <div class="overlay">
+          <p class="subtitle">ENDLESS ADVENTURE AWAITS</p>
+          <h3>Australia</h3>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="visa-free">
+  <div class="header">
+    <h2 class="section-title">VISA FREE DESTINATIONS</h2>
+  </div>
+
+  <div class="destination-grid">
+  <!-- Left Column -->
+  <div class="left-column">
+    <div class="destination-card mauritius" onclick="goToPage('hotels.html')">
+      <div class="text">
+        <h3>Mauritius</h3>
+        <p>From ₹2,600</p>
+      </div>
+    </div>
+    <div class="nested-cards">
+      <div class="destination-card  malaysia" onclick="goToPage('hotels.html')">
+        <div class="text">
+          <h3>Malaysia</h3>
+          <p>From ₹1,722</p>
+        </div>
+      </div>
+      <div class="destination-card  srilanka" onclick="goToPage('hotels.html')">
+        <div class="text">
+          <h3>Sri Lanka</h3>
+          <p>From ₹1,713</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Center Column -->
+  <div class="destination-card  tall thailand" onclick="goToPage('hotels.html')">
+    <div class="text">
+      <h3>Thailand</h3>
+      <p>From ₹1,716</p>
+    </div>
+  </div>
+
+  <!-- Right Column -->
+  <div class="right-column">
+    <div class="destination-card  maldives" onclick="goToPage('hotels.html')">
+      <div class="text">
+        <h3>Maldives</h3>
+        <p>From ₹1,923</p>
+      </div>
+    </div>
+    <div class="destination-card  seychelles" onclick="goToPage('hotels.html')">
+      <div class="text">
+        <h3>Seychelles</h3>
+        <p>From ₹2,210</p>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+    <section class="content-section" id="about-us">
+        <div class="text-content">
+            <h2>About Us - <span>Nestigo</span></h2>
+            <p>At Nestigo, we believe every journey deserves a soft landing. We're not just a hotel booking site — we're your travel 
+              comfort partner. Whether you're chasing sunsets, sealing deals, or escaping the everyday, Nestigo helps you find the 
+              perfect stay with ease, trust, and a touch of luxury. </p>
+            
+            <p>From hidden boutique gems to grand city hotels, we curate stays that suit your style and budget. With seamless booking,
+               real reviews, and 24/7 support, your peace of mind is our priority. Because at Nestigo, we don’t just book rooms — we 
+               deliver rest, comfort, and unforgettable stays.</p>
+        </div>
+        
+        <div class="logo-container">
+            <!-- Replace with your actual tripillow logo -->
+             <video autoplay muted loop class="tripillow-logo"><source src="./videos/nestigo.mp4" type="video/mp4"></video>
+        </div>
+    </section>
+    
+    <footer class="journease-footer">
+  <div class="footer-container">
+    <!-- Video Section (Left) - Autoplay & Loop -->
+    <div class="video-section">
+      <video autoplay loop muted playsinline>
+        <source src="./videos/earth.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    </div>
+
+    <!-- Contact & Social (Right) -->
+    <div class="content-section">
+      <div class="contact-section">
+        <h3><i class="fas fa-envelope"></i> Talk to us</h3>
+        <a href="mailto:nestigoplanners@gmail.com">
+          <span><i class="fas fa-envelope-open-text"></i> nestigoplanners@gmail.com</span>
+        </a>
+        <a href="tel:+919234517832">
+          <span><i class="fas fa-phone-alt"></i> +919234517832</span>
+        </a>
+        <a href="tel:+918252679012">
+          <span><i class="fas fa-mobile-alt"></i> +918252679012</span>
+        </a>
+        <a href="mailto:nestigocareers@gmail.com">
+          <span><i class="fas fa-briefcase"></i> nestigocareers@gmail.com</span>
+        </a>
+      </div>
+
+      <div class="social-section">
+        <h3><i class="fas fa-share-alt"></i> Social</h3>
+        <a href="https://facebook.com/nestigo">
+          <span><i class="fab fa-facebook-f"></i> Facebook</span>
+        </a>
+        <a href="https://twitter.com/nestigo">
+          <span><i class="fab fa-twitter"></i> Twitter</span>
+        </a>
+        <a href="https://instagram.com/nestigo">
+          <span><i class="fab fa-instagram"></i> Instagram</span>
+        </a>
+        <a href="https://linkedin.com/company/nestigo">
+          <span><i class="fab fa-linkedin-in"></i> LinkedIn</span>
+        </a>
+        <a href="https://youtube.com/nestigo">
+          <span><i class="fab fa-youtube"></i> Youtube</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Copyright -->
+  <div class="copyright">
+    <p><i class="far fa-copyright"></i> 2025 Nsetigo Global Private Ltd. <span>All rights reserved.</span></p>
+    <p>Nestigo Global Private Limited</p>
+  </div>
+</footer>
+
+<script src="https://cdn.auth0.com/js/auth0-spa-js/1.13/auth0-spa-js.production.js"></script>
+<script src="script.js" defer></script>
+
+</body>
+</html>

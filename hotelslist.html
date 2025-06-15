@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hotel Results</title>
+  <link rel="stylesheet" href="hotelslist.css">
+  <link rel="icon" type="image/png" href="./images/logo.ico">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"/>
+   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC4m3lN1aSqdlY2rs8UFR-55zS_PxJCgBw&libraries=places"></script>
+  
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <div class="logo"><a href="index.html" class="logo-nav"><img src="images/logo.png" alt="Nestigo Logo" width="40"></a>Nestigo</div>
+      <!-- NAVIGATION BAR -->
+  <div class="nav-buttons">
+
+  <a href="index.html" class="nav-button">Home</a>
+  <a class="nav-button" id="sign-in-btn"
+   href="https://dev-srolq5coxmes27yo.us.auth0.com/authorize?client_id=1DwVF3ZMshLbYevAMGFb6hhEj0kIIdFE&response_type=token&redirect_uri=http://localhost:5500/index.html">
+   Sign In
+</a>
+<a class="nav-button" id="sign-up-btn"
+   href="https://dev-srolq5coxmes27yo.us.auth0.com/authorize?client_id=1DwVF3ZMshLbYevAMGFb6hhEj0kIIdFE&response_type=token&redirect_uri=http://localhost:5500/index.html&screen_hint=signup">
+   Sign Up
+</a>
+
+<div class="dropdown" id="user-profile" style="display: none;">
+  <button class="profile-btn" id="profile-button">
+    <img id="profile-pic" src="" alt="User" />
+    <span id="profile-name"></span>
+  </button>
+
+  <div class="dropdown-menu" id="dropdown-menu">
+    <div class="dropdown-user-info">
+    <div>
+      <p class="greeting">Hi, <span id="dropdown-username">User</span></p>
+    </div>
+    </div>
+    <a href="#" onclick="toggleBookingHistory()">🧳 Your Booking History</a>
+    <a href="#" onclick="logout()">🚪 Logout</a>
+
+    <!-- ✅ Booking box inside dropdown -->
+    <div id="booking-history-box">
+      <h4>🧳 Your Booking History</h4>
+      <ul id="booking-list"></ul>
+      <button onclick="downloadBookingPDF()">Download PDF</button>
+    </div>
+  </div>
+</div>
+</div>
+
+    </nav>
+  </header>
+
+   <div class="booking-bar">
+    <div class="input-wrapper">
+    <form onsubmit="fetchHotels(event)">
+    <i class="fa fa-search search-icon"></i>
+    <input type="text" id="destination-input" placeholder="Destination or City" class="input-box" /></form></div>
+    <input type="date" class="input-box" value="2025-06-15" id="checkin"/>
+    <input type="date" class="input-box" value="2025-06-18" id="checkout"/>
+
+    <div class="dropdown-container" onclick="toggleDropdown()">
+  <div class="dropdown-header">
+    <span id="dropdown-label">2 adults · 1 room</span>
+    <i class="fa-solid fa-chevron-down dropdown-arrow"></i>
+  </div>
+
+  <div class="dropdown-box" id="dropdown-box">
+    <div class="dropdown-item">
+      Room
+      <div class="counter">
+        <button onclick="event.stopPropagation(); changeCount('room', -1)">−</button>
+        <span id="room-count">1</span>
+        <button onclick="event.stopPropagation(); changeCount('room', 1)">+</button>
+      </div>
+    </div>
+
+    <div class="dropdown-item">
+      Adults
+      <div class="counter">
+        <button onclick="event.stopPropagation(); changeCount('adults', -1)">−</button>
+        <span id="adults-count">2</span>
+        <button onclick="event.stopPropagation(); changeCount('adults', 1)">+</button>
+      </div>
+    </div>
+
+    <div class="dropdown-item">
+      Children
+      <div class="counter">
+        <button onclick="event.stopPropagation(); changeCount('children', -1)">−</button>
+        <span id="children-count">0</span>
+        <button onclick="event.stopPropagation(); changeCount('children', 1)">+</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+    <button class="search-btn" id="search-button">Search</button>
+  </div>
+
+<div class="main-content">
+  <div class="sidebar">
+    <!-- Search on Map (Clickable) -->
+ <a href="https://www.google.com/maps/search/?api=1&query=Mumbai" 
+   target="_blank" 
+   class="map-image" id="map-link" style="cursor: pointer;">
+  <img src="https://images.unsplash.com/photo-1569336415962-a4bd9f69cd83?q=80&w=1931&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
+       alt="Search on Map" 
+       style="width: 100%; display: block; ">
+  <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #000000; font-weight: bold; font-size: 16px;">
+    <i class="fa fa-map-marker-alt"></i> SEARCH ON MAP
+  </div>
+ </a>
+
+ </div>
+
+  <div id="results" class="results-box"></div>
+</div>
+
+   <footer class="journease-footer">
+  <div class="footer-container">
+    <!-- Video Section (Left) - Autoplay & Loop -->
+    <div class="video-section">
+      <video autoplay loop muted playsinline>
+        <source src="./videos/earth.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    </div>
+
+    <!-- Contact & Social (Right) -->
+    <div class="content-section">
+      <div class="contact-section">
+        <h3><i class="fas fa-envelope"></i> Talk to us</h3>
+        <a href="mailto:nestigoplanners@gmail.com">
+          <span><i class="fas fa-envelope-open-text"></i> nestigoplanners@gmail.com</span>
+        </a>
+        <a href="tel:+919234517832">
+          <span><i class="fas fa-phone-alt"></i> +919234517832</span>
+        </a>
+        <a href="tel:+918252679012">
+          <span><i class="fas fa-mobile-alt"></i> +918252679012</span>
+        </a>
+        <a href="mailto:nestigocareers@gmail.com">
+          <span><i class="fas fa-briefcase"></i> nestigocareers@gmail.com</span>
+        </a>
+      </div>
+
+      <div class="social-section">
+        <h3><i class="fas fa-share-alt"></i> Social</h3>
+        <a href="https://facebook.com/nestigo">
+          <span><i class="fab fa-facebook-f"></i> Facebook</span>
+        </a>
+        <a href="https://twitter.com/nestigo">
+          <span><i class="fab fa-twitter"></i> Twitter</span>
+        </a>
+        <a href="https://instagram.com/nestigo">
+          <span><i class="fab fa-instagram"></i> Instagram</span>
+        </a>
+        <a href="https://linkedin.com/company/nestigo">
+          <span><i class="fab fa-linkedin-in"></i> LinkedIn</span>
+        </a>
+        <a href="https://youtube.com/nestigo">
+          <span><i class="fab fa-youtube"></i> Youtube</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Copyright -->
+  <div class="copyright">
+    <p><i class="far fa-copyright"></i> 2025 Nestigo Global Private Ltd. <span>All rights reserved.</span></p>
+    <p>Nestigo Global Private Limited</p>
+  </div>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="hotelslist.js"></script>
+  </body>
+  </html>
