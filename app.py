@@ -9,11 +9,12 @@ from pymongo import MongoClient
 from datetime import datetime
 from dotenv import load_dotenv
 import os
+import certifi
 
 load_dotenv()  # loads from .env file
 
 app = Flask(__name__)
-CORS(app, origins=["http://localhost:5500"])    #app was running on port number:5500, update accordingly
+CORS(app, origins=["http://localhost:5500"])     #app was running on port number : 5500 locally, so update according to your system
 
 RAPIDAPI_KEY = os.getenv("RAPIDAPI_KEY")
 RAPIDAPI_HOST = os.getenv("RAPIDAPI_HOST")
@@ -59,14 +60,11 @@ stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
 @app.route("/create-checkout-session", methods=["POST"])
 def create_checkout_session():
     data = request.json
-    hotel = data.get("hotelName")
-    price = float(data.get("amount"))
-    email = data.get("userEmail")
-
     try:
-        encoded_email = urllib.parse.quote(email)
-        encoded_hotel = urllib.parse.quote(hotel)
-        # Stripe expects amount in cents
+        hotel = data.get("hotelName")
+        price = float(data.get("amount"))
+        email = data.get("userEmail")
+
         session = stripe.checkout.Session.create(
             payment_method_types=["card"],
             line_items=[{
@@ -78,12 +76,17 @@ def create_checkout_session():
                 'quantity': 1,
             }],
             mode='payment',
-            success_url = f"http://localhost:5000/success?email={encoded_email}&hotel={encoded_hotel}",
-            cancel_url="http://localhost:5000/cancel"
-            )
+            success_url = f"http://localhost:5000/success?email={urllib.parse.quote(email)}&hotel={urllib.parse.quote(hotel)}",
+            cancel_url = "http://localhost:5000/cancel"
+        )
+
+        print("✅ Stripe session created:", session.url)
         return jsonify({'checkout_url': session.url})
+
     except Exception as e:
+        print("❌ Stripe error:", e)
         return jsonify(error=str(e)), 500
+
 
 EMAIL_USER = os.getenv("EMAIL_USER")
 EMAIL_PASS = os.getenv("EMAIL_PASS")
@@ -114,7 +117,13 @@ def payment_success():
 # Replace with your actual URI
 uri = os.getenv("MONGODB_URI")
 
-client = MongoClient(uri)
+client = MongoClient(uri, tlsCAFile=certifi.where())
+try:
+    client.admin.command("ping")
+    print("✅ MongoDB connected successfully")
+except Exception as e:
+    print("❌ MongoDB connection failed:", e)
+
 db = client["nestigo2025"]
 users_collection = db["users"]
 
