@@ -29,4 +29,4 @@ It redirects the user to "Hotel Results page (hotelslist.html)" where the destin
 
 The user will choose the airbnb and click on Book Now option which will redirect them to Stripe Payment Gateway, and the user will provide the email, they want their booking confirmation to receive and click Book Now for successful completion of their purchase. After this step, a confirmation email will be sent to the registered email, and the recent booking will show up in the Booking History area. All of these info gets retrieved to the database provided.
 
-### If you face error regarding CORS in the console and your MongoDB is not getting connected, then probably you will have t choose a lower version of Python to run shuch as Python 3.9.x or something, then download your dependencies again and run your app again, this time it will not cause any error.
+### If you face error regarding CORS in the console and your MongoDB is not getting connected, then probably you will have to choose a lower version of Python to run shuch as Python 3.9.x or something, then download your dependencies again and run your app again, this time it will not cause any error.
