@@ -13,7 +13,7 @@ import os
 load_dotenv()  # loads from .env file
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, origins=["http://localhost:5500"])    #app was running on port number:5500, update accordingly
 
 RAPIDAPI_KEY = os.getenv("RAPIDAPI_KEY")
 RAPIDAPI_HOST = os.getenv("RAPIDAPI_HOST")
